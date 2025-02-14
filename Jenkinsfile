@@ -8,7 +8,7 @@ pipeline {
         stage("Install Dependencies") {
             steps {
                 script {
-                    sh "pip install -r requirements.txt"
+                    sh "pip3 install -r requirements.txt"
                 }
             }
         }
@@ -44,7 +44,7 @@ pipeline {
                             source /home/ubuntu/app/venv/bin/activate
 
                             echo "Installing dependencies..."
-                            pip install -r /home/ubuntu/app/requirements.txt
+                            pip3 install -r /home/ubuntu/app/requirements.txt
 
                             echo "Restarting Flask application..."
                             sudo systemctl restart flaskapp.service
