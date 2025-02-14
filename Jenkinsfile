@@ -5,6 +5,14 @@ pipeline {
     }
 
     stages {
+        stage("git checkout"){
+            steps{
+                script{
+                    git branch: 'main', 
+                url: 'https://github.com/gaurav-997/python_flask_cicd.git'
+                }
+            }
+        }
         stage("Install Dependencies") {
             steps {
                 script {
