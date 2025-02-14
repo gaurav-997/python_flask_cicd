@@ -8,7 +8,10 @@ pipeline {
         stage("Install Dependencies") {
             steps {
                 script {
-                    sh "pip3 install -r requirements.txt"
+                    sh '''
+                    python3 -m venv /home/ubuntu/app/venv"
+                    source /home/ubuntu/app/venv/bin/activate"
+                    pip3 install -r requirements.txt '''
                 }
             }
         }
