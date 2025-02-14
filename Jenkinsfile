@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        SERVER_IP = credentials("server_ip")
+        SERVER_IP = credentials("server-ip")
     }
 
     stages {
