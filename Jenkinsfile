@@ -10,7 +10,7 @@ pipeline {
                 script {
                     sh '''
                     source /home/ubuntu/app/venv/bin/activate
-                    pip3 install -r /home/ubuntu/app/requirements.txt '''
+                    . /home/ubuntu/app/venv/bin/activate && pip install -r /home/ubuntu/app/requirements.txt '''
                 }
             }
         }
