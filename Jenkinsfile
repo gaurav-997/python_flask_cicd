@@ -1,50 +1,56 @@
-pipeline{
+pipeline {
     agent any
-    environment{
-        SERVER_IP = credential("server_ip")
+    environment {
+        SERVER_IP = credentials("server_ip")
     }
 
-    stages{
-        stage("install dependicies"){
-            steps{
-                script{
-                    sh " pip install -r requirmnets.txt"
+    stages {
+        stage("Install Dependencies") {
+            steps {
+                script {
+                    sh "pip install -r requirements.txt"
                 }
             }
         }
-        stage("test"){
-            steps{
-                script{
+        stage("Run Tests") {
+            steps {
+                script {
                     sh "pytest"
                 }
             }
         }
-        stage("package code"){
-            steps{
-                script{
+        stage("Package Code") {
+            steps {
+                script {
                     sh "zip -r myapp.zip ./* -x '*.git*'"
-                    sh " ls -lrt"
+                    sh "ls -lrt"
                 }
             }
         }
-        stage("copy & deploy to server"){
-            steps{
-                script{
-                    withCredentials(sshUserPrivateKey[credentialID:"ssh-key" , keyfileVariable:'ssh-key',
-                    usernameVariable:'username'])
-                    sh ''' 
-                    scp -r  -i ${ssh-key} myapp.zip ${username}@${SERVER_IP}:/home/ubuntu
-                    ssh -i ${ssh-key} ${username}@${SERVER_IP} << 
-                    EOF
-                        unzip -o  /home/ubuntu/myappp.zip -d /home/ubuntu/app
-                        source app/venv/bin/activate
-                        cd /home/ubuntu/app
-                        pip install -r requirments.txt
-                        sudo systemctl start flaskapp.service
-                    EOF
+        stage("Deploy to Server") {
+            steps {
+                script {
+                    withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'USERNAME')]) {
+                        sh '''
+                        echo "Transferring files to ${SERVER_IP}..."
+                        scp -i ${SSH_KEY} myapp.zip ${USERNAME}@${SERVER_IP}:/home/ubuntu
 
-                    '''
+                        echo "Deploying on ${SERVER_IP}..."
+                        ssh -i ${SSH_KEY} ${USERNAME}@${SERVER_IP} << 'EOF'
+                            echo "Unzipping application..."
+                            unzip -o /home/ubuntu/myapp.zip -d /home/ubuntu/app
 
+                            echo "Activating virtual environment..."
+                            source /home/ubuntu/app/venv/bin/activate
+
+                            echo "Installing dependencies..."
+                            pip install -r /home/ubuntu/app/requirements.txt
+
+                            echo "Restarting Flask application..."
+                            sudo systemctl restart flaskapp.service
+                        EOF
+                        '''
+                    }
                 }
             }
         }
