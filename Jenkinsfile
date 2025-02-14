@@ -3,14 +3,14 @@ pipeline {
     environment {
         SERVER_IP = credentials("server-ip")
     }
-    
+
     stages {
         stage("Install Dependencies") {
             steps {
                 script {
                     sh '''
-                    pip3 install -r /home/ubuntu/app/requirements.txt 
-                    '''
+                    source /home/ubuntu/app/venv/bin/activate
+                    pip3 install -r /home/ubuntu/app/requirements.txt '''
                 }
             }
         }
