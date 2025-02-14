@@ -3,32 +3,14 @@ pipeline {
     environment {
         SERVER_IP = credentials("server-ip")
     }
-
+    
     stages {
-        stage("git checkout"){
-            steps{
-                script{
-                    dir('/home/ubuntu/app') {
-
-                        git branch: 'main', 
-                        url: 'https://github.com/gaurav-997/python_flask_cicd.git' 
-                    }
-                }
-            }
-        }
         stage("Install Dependencies") {
             steps {
                 script {
                     sh '''
-                    # Ensure Jenkins user can create venv
-                    sudo python3 -m venv /home/ubuntu/app/venv
-
-                    # Set correct permissions
-                    sudo chown -R $(whoami) /home/ubuntu/app/venv
-
-                    # Activate virtual environment and install dependencies
-                    source /home/ubuntu/app/venv/bin/activate
-                    pip3 install -r /home/ubuntu/app/requirements.txt '''
+                    pip3 install -r /home/ubuntu/app/requirements.txt 
+                    '''
                 }
             }
         }
