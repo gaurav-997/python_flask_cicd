@@ -8,8 +8,11 @@ pipeline {
         stage("git checkout"){
             steps{
                 script{
-                    git branch: 'main', 
-                url: 'https://github.com/gaurav-997/python_flask_cicd.git'
+                    dir('/home/ubuntu/app') {
+
+                        git branch: 'main', 
+                        url: 'https://github.com/gaurav-997/python_flask_cicd.git' 
+                    }
                 }
             }
         }
