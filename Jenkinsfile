@@ -9,9 +9,15 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    python3 -m venv /home/ubuntu/app/venv"
-                    source /home/ubuntu/app/venv/bin/activate"
-                    pip3 install -r requirements.txt '''
+                    # Ensure Jenkins user can create venv
+                    sudo python3 -m venv /home/ubuntu/app/venv
+
+                    # Set correct permissions
+                    sudo chown -R $(whoami) /home/ubuntu/app/venv
+
+                    # Activate virtual environment and install dependencies
+                    source /home/ubuntu/app/venv/bin/activate
+                    pip3 install -r /home/ubuntu/app/requirements.txt '''
                 }
             }
         }
